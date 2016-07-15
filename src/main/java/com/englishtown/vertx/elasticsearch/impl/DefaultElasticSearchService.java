@@ -6,6 +6,9 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
@@ -40,6 +43,8 @@ import java.util.Map;
  */
 public class DefaultElasticSearchService implements InternalElasticSearchService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultElasticSearchService.class);
+	
     private final TransportClientFactory clientFactory;
     private final ElasticSearchConfigurator configurator;
     protected TransportClient client;
@@ -265,7 +270,9 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
                 }
             }
         }
-
+        
+        LOGGER.info("ElasticSearch Query using Java Client API:\n" + builder.internalBuilder());  
+        
         builder.execute(new ActionListener<SearchResponse>() {
             @Override
             public void onResponse(SearchResponse searchResponse) {

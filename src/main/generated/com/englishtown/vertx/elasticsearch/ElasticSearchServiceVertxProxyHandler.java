@@ -16,40 +16,25 @@
 
 package com.englishtown.vertx.elasticsearch;
 
-import com.englishtown.vertx.elasticsearch.ElasticSearchService;
-import io.vertx.core.Vertx;
-import io.vertx.core.Handler;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.eventbus.EventBus;
-import io.vertx.core.eventbus.Message;
-import io.vertx.core.eventbus.MessageConsumer;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.ReplyException;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.json.JsonArray;
-import java.util.Collection;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.UUID;
-import java.util.stream.Collectors;
-import io.vertx.serviceproxy.ProxyHelper;
-import io.vertx.serviceproxy.ProxyHandler;
-import com.englishtown.vertx.elasticsearch.DeleteOptions;
-import io.vertx.core.Vertx;
-import com.englishtown.vertx.elasticsearch.GetOptions;
-import java.util.List;
-import com.englishtown.vertx.elasticsearch.ElasticSearchService;
-import com.englishtown.vertx.elasticsearch.UpdateOptions;
-import com.englishtown.vertx.elasticsearch.SearchOptions;
-import com.englishtown.vertx.elasticsearch.IndexOptions;
-import com.englishtown.vertx.elasticsearch.SuggestOptions;
-import io.vertx.core.json.JsonObject;
+
+import io.vertx.core.AsyncResult;
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Handler;
-import com.englishtown.vertx.elasticsearch.SearchScrollOptions;
+import io.vertx.core.Handler;
+import io.vertx.core.Vertx;
+import io.vertx.core.Vertx;
+import io.vertx.core.eventbus.Message;
+import io.vertx.core.eventbus.MessageConsumer;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.json.JsonObject;
+import io.vertx.serviceproxy.ProxyHandler;
 
 /*
   Generated Proxy code - DO NOT EDIT
