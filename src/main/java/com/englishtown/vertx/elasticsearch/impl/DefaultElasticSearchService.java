@@ -5,15 +5,21 @@ import com.englishtown.vertx.elasticsearch.internal.InternalElasticSearchService
 import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
+import io.vertx.core.json.JsonArray;
 import io.vertx.core.json.JsonObject;
 import io.vertx.core.logging.Logger;
 import io.vertx.core.logging.LoggerFactory;
 
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.bulk.BulkItemResponse;
+import org.elasticsearch.action.bulk.BulkRequestBuilder;
+import org.elasticsearch.action.bulk.BulkResponse;
+import org.elasticsearch.action.delete.DeleteRequest;
 import org.elasticsearch.action.delete.DeleteRequestBuilder;
 import org.elasticsearch.action.delete.DeleteResponse;
 import org.elasticsearch.action.get.GetRequestBuilder;
 import org.elasticsearch.action.get.GetResponse;
+import org.elasticsearch.action.index.IndexRequest;
 import org.elasticsearch.action.index.IndexRequestBuilder;
 import org.elasticsearch.action.index.IndexResponse;
 import org.elasticsearch.action.search.SearchRequestBuilder;
@@ -21,6 +27,7 @@ import org.elasticsearch.action.search.SearchResponse;
 import org.elasticsearch.action.search.SearchScrollRequestBuilder;
 import org.elasticsearch.action.suggest.SuggestRequestBuilder;
 import org.elasticsearch.action.suggest.SuggestResponse;
+import org.elasticsearch.action.update.UpdateRequest;
 import org.elasticsearch.action.update.UpdateRequestBuilder;
 import org.elasticsearch.action.update.UpdateResponse;
 import org.elasticsearch.client.transport.TransportClient;
@@ -86,25 +93,9 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
     }
 
     @Override
-    public void index(String index, String type, JsonObject source, IndexOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
-
-        IndexRequestBuilder builder = client.prepareIndex(index, type)
-                .setSource(source.encode());
-
-        if (options != null) {
-            if (options.getId() != null) builder.setId(options.getId());
-            if (options.getRouting() != null) builder.setRouting(options.getRouting());
-            if (options.getParent() != null) builder.setParent(options.getParent());
-            if (options.getOpType() != null) builder.setOpType(options.getOpType());
-            if (options.isRefresh() != null) builder.setRefresh(options.isRefresh());
-            if (options.getConsistencyLevel() != null) builder.setConsistencyLevel(options.getConsistencyLevel());
-            if (options.getVersion() != null) builder.setVersion(options.getVersion());
-            if (options.getVersionType() != null) builder.setVersionType(options.getVersionType());
-            if (options.getTimestamp() != null) builder.setTimestamp(options.getTimestamp());
-            if (options.getTtl() != null) builder.setTTL(options.getTtl());
-            if (options.getTimeout() != null) builder.setTimeout(options.getTimeout());
-        }
-
+    public void index(IndexOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+    	IndexRequestBuilder builder = convert(options);
+  
         builder.execute(new ActionListener<IndexResponse>() {
             @Override
             public void onResponse(IndexResponse indexResponse) {
@@ -124,11 +115,54 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
         });
 
     }
+    
+    private IndexRequestBuilder convert(IndexOptions options) {
+        IndexRequestBuilder builder = client.prepareIndex(options.getIndex(), options.getType())
+                .setSource(options.getDoc().encode());
+
+        if (options != null) {
+            if (options.getId() != null) builder.setId(options.getId());
+            if (options.getRouting() != null) builder.setRouting(options.getRouting());
+            if (options.getParent() != null) builder.setParent(options.getParent());
+            if (options.getOpType() != null) builder.setOpType(options.getOpType());
+            if (options.isRefresh() != null) builder.setRefresh(options.isRefresh());
+            if (options.getConsistencyLevel() != null) builder.setConsistencyLevel(options.getConsistencyLevel());
+            if (options.getVersion() != null) builder.setVersion(options.getVersion());
+            if (options.getVersionType() != null) builder.setVersionType(options.getVersionType());
+            if (options.getTimestamp() != null) builder.setTimestamp(options.getTimestamp());
+            if (options.getTtl() != null) builder.setTTL(options.getTtl());
+            if (options.getTimeout() != null) builder.setTimeout(options.getTimeout());
+        }
+        
+        return builder;
+    }
 
     @Override
-    public void update(String index, String type, String id, UpdateOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+    public void update(UpdateOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+    	UpdateRequestBuilder builder = convert(options);
+        
+        builder.execute(new ActionListener<UpdateResponse>() {
+            @Override
+            public void onResponse(UpdateResponse updateResponse) {
+                JsonObject result = new JsonObject()
+                        .put(CONST_INDEX, updateResponse.getIndex())
+                        .put(CONST_TYPE, updateResponse.getType())
+                        .put(CONST_ID, updateResponse.getId())
+                        .put(CONST_VERSION, updateResponse.getVersion())
+                        .put(CONST_CREATED, updateResponse.isCreated());
+                resultHandler.handle(Future.succeededFuture(result));
+            }
 
-        UpdateRequestBuilder builder = client.prepareUpdate(index, type, id);
+            @Override
+            public void onFailure(Throwable e) {
+                resultHandler.handle(Future.failedFuture(e));
+            }
+        });
+
+    }
+    
+    private UpdateRequestBuilder convert(UpdateOptions options) {
+        UpdateRequestBuilder builder = client.prepareUpdate(options.getIndex(), options.getType(), options.getId());
 
         if (options != null) {
             if (options.getRouting() != null) builder.setRouting(options.getRouting());
@@ -158,28 +192,74 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
                 builder.setFields(options.getFields().toArray(new String[options.getFields().size()]));
             }
         }
-
-        builder.execute(new ActionListener<UpdateResponse>() {
-            @Override
-            public void onResponse(UpdateResponse updateResponse) {
-                JsonObject result = new JsonObject()
-                        .put(CONST_INDEX, updateResponse.getIndex())
-                        .put(CONST_TYPE, updateResponse.getType())
-                        .put(CONST_ID, updateResponse.getId())
-                        .put(CONST_VERSION, updateResponse.getVersion())
-                        .put(CONST_CREATED, updateResponse.isCreated());
-                resultHandler.handle(Future.succeededFuture(result));
-            }
-
-            @Override
-            public void onFailure(Throwable e) {
-                resultHandler.handle(Future.failedFuture(e));
-            }
-        });
-
+        
+        return builder;
     }
 
     @Override
+    public void bulk(BulkOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+    	BulkRequestBuilder builder = client.prepareBulk();
+    	if (options != null) {
+            if (options.isRefresh() != null) builder.setRefresh(options.isRefresh());
+            if (options.getConsistencyLevel() != null) builder.setConsistencyLevel(options.getConsistencyLevel());
+            if (options.getTimeout() != null) builder.setTimeout(options.getTimeout());          
+            
+            for (AbstractWriteOptions<?> writeOptions : options.getWriteOptions()) {
+				switch(writeOptions.getClass().getSimpleName()) {         	
+					case "DeleteOptions":
+						builder.add(createDeleteRequest((DeleteOptions)writeOptions));
+						break;
+					case "IndexOptions":
+						builder.add(createIndexRequest((IndexOptions)writeOptions));
+						break;
+					case "UpdateOptions":
+						builder.add(createUpdateRequest((UpdateOptions)writeOptions));
+						break;
+				}
+			}
+    	}
+    	
+    	builder.execute(new ActionListener<BulkResponse>() {
+             @Override
+             public void onResponse(BulkResponse bulkResponse) {
+            	JsonObject result = new JsonObject();
+            	JsonArray items = new JsonArray();
+            	for (BulkItemResponse bulkItemResponse : bulkResponse.getItems()) {
+            		JsonObject itemResult = new JsonObject()
+                            .put(CONST_INDEX, bulkItemResponse.getIndex())
+                            .put(CONST_TYPE, bulkItemResponse.getType())
+                            .put(CONST_ID, bulkItemResponse.getId())
+                            .put(CONST_VERSION, bulkItemResponse.getVersion());   
+    				items.add(itemResult);
+				}
+                result.put("items", items);
+                result.put("tookInMillis", bulkResponse.getTookInMillis());
+                resultHandler.handle(Future.succeededFuture(result));
+             }
+
+             @Override
+             public void onFailure(Throwable e) {
+                 resultHandler.handle(Future.failedFuture(e));
+             }
+         });
+    }
+    
+    private UpdateRequest createUpdateRequest(UpdateOptions writeOptions) {
+		UpdateRequestBuilder convert = convert(writeOptions);
+		return convert.request();
+	}
+
+	private IndexRequest createIndexRequest(IndexOptions writeOptions) {
+		IndexRequestBuilder convert = convert(writeOptions);
+		return convert.request();
+	}
+
+	private DeleteRequest createDeleteRequest(DeleteOptions writeOptions) {
+		DeleteRequestBuilder convert = convert(writeOptions);
+		return convert.request();
+	}
+
+	@Override
     public void get(String index, String type, String id, GetOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
 
         GetRequestBuilder builder = client.prepareGet(index, type, id);
@@ -312,20 +392,9 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
     }
 
     @Override
-    public void delete(String index, String type, String id, DeleteOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
-
-        DeleteRequestBuilder builder = client.prepareDelete(index, type, id);
-
-        if (options != null) {
-            if (options.getRouting() != null) builder.setRouting(options.getRouting());
-            if (options.getParent() != null) builder.setParent(options.getParent());
-            if (options.isRefresh() != null) builder.setRefresh(options.isRefresh());
-            if (options.getConsistencyLevel() != null) builder.setConsistencyLevel(options.getConsistencyLevel());
-            if (options.getVersion() != null) builder.setVersion(options.getVersion());
-            if (options.getVersionType() != null) builder.setVersionType(options.getVersionType());
-            if (options.getTimeout() != null) builder.setTimeout(options.getTimeout());
-        }
-
+    public void delete(DeleteOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+    	DeleteRequestBuilder builder = convert(options);
+    	
         builder.execute(new ActionListener<DeleteResponse>() {
             @Override
             public void onResponse(DeleteResponse deleteResponse) {
@@ -343,6 +412,22 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
             }
         });
 
+    }
+    
+    private DeleteRequestBuilder convert(DeleteOptions options) {
+        DeleteRequestBuilder builder = client.prepareDelete(options.getIndex(), options.getType(), options.getId());
+
+        if (options != null) {
+            if (options.getRouting() != null) builder.setRouting(options.getRouting());
+            if (options.getParent() != null) builder.setParent(options.getParent());
+            if (options.isRefresh() != null) builder.setRefresh(options.isRefresh());
+            if (options.getConsistencyLevel() != null) builder.setConsistencyLevel(options.getConsistencyLevel());
+            if (options.getVersion() != null) builder.setVersion(options.getVersion());
+            if (options.getVersionType() != null) builder.setVersionType(options.getVersionType());
+            if (options.getTimeout() != null) builder.setTimeout(options.getTimeout());
+        }
+
+        return builder;
     }
 
     @Override

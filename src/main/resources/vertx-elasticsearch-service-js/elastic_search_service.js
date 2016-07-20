@@ -26,6 +26,7 @@ var UpdateOptions = com.englishtown.vertx.elasticsearch.UpdateOptions;
 var SearchOptions = com.englishtown.vertx.elasticsearch.SearchOptions;
 var IndexOptions = com.englishtown.vertx.elasticsearch.IndexOptions;
 var SuggestOptions = com.englishtown.vertx.elasticsearch.SuggestOptions;
+var BulkOptions = com.englishtown.vertx.elasticsearch.BulkOptions;
 var GetOptions = com.englishtown.vertx.elasticsearch.GetOptions;
 var SearchScrollOptions = com.englishtown.vertx.elasticsearch.SearchScrollOptions;
 
@@ -67,16 +68,13 @@ var ElasticSearchService = function(j_val) {
    http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/index_.html
 
    @public
-   @param index {string} the index name 
-   @param type {string} the type name 
-   @param source {Object} the source to be indexed 
    @param options {Object} optional index options (id, timeout, ttl, etc.) 
    @param resultHandler {function} result handler callback 
    */
-  this.index = function(index, type, source, options, resultHandler) {
+  this.index = function(options, resultHandler) {
     var __args = arguments;
-    if (__args.length === 5 && typeof __args[0] === 'string' && typeof __args[1] === 'string' && (typeof __args[2] === 'object' && __args[2] != null) && (typeof __args[3] === 'object' && __args[3] != null) && typeof __args[4] === 'function') {
-      j_elasticSearchService["index(java.lang.String,java.lang.String,io.vertx.core.json.JsonObject,com.englishtown.vertx.elasticsearch.IndexOptions,io.vertx.core.Handler)"](index, type, utils.convParamJsonObject(source), options != null ? new IndexOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
+    if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
+      j_elasticSearchService["index(com.englishtown.vertx.elasticsearch.IndexOptions,io.vertx.core.Handler)"](options != null ? new IndexOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
       if (ar.succeeded()) {
         resultHandler(utils.convReturnJson(ar.result()), null);
       } else {
@@ -90,16 +88,33 @@ var ElasticSearchService = function(j_val) {
    http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/java-update-api.html
 
    @public
-   @param index {string} the index name 
-   @param type {string} the type name 
-   @param id {string} the source id to update 
    @param options {Object} the update options (doc, script, etc.) 
    @param resultHandler {function} result handler callback 
    */
-  this.update = function(index, type, id, options, resultHandler) {
+  this.update = function(options, resultHandler) {
     var __args = arguments;
-    if (__args.length === 5 && typeof __args[0] === 'string' && typeof __args[1] === 'string' && typeof __args[2] === 'string' && (typeof __args[3] === 'object' && __args[3] != null) && typeof __args[4] === 'function') {
-      j_elasticSearchService["update(java.lang.String,java.lang.String,java.lang.String,com.englishtown.vertx.elasticsearch.UpdateOptions,io.vertx.core.Handler)"](index, type, id, options != null ? new UpdateOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
+    if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
+      j_elasticSearchService["update(com.englishtown.vertx.elasticsearch.UpdateOptions,io.vertx.core.Handler)"](options != null ? new UpdateOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
+      if (ar.succeeded()) {
+        resultHandler(utils.convReturnJson(ar.result()), null);
+      } else {
+        resultHandler(null, ar.cause());
+      }
+    });
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+   https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-bulk.html
+
+   @public
+   @param options {Object} the bulk options 
+   @param resultHandler {function} result handler callback 
+   */
+  this.bulk = function(options, resultHandler) {
+    var __args = arguments;
+    if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
+      j_elasticSearchService["bulk(com.englishtown.vertx.elasticsearch.BulkOptions,io.vertx.core.Handler)"](options != null ? new BulkOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
       if (ar.succeeded()) {
         resultHandler(utils.convReturnJson(ar.result()), null);
       } else {
@@ -177,16 +192,13 @@ var ElasticSearchService = function(j_val) {
    http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/delete.html
 
    @public
-   @param index {string} the index name 
-   @param type {string} the type name 
-   @param id {string} the source id to delete 
    @param options {Object} optional delete options (timeout, etc.) 
    @param resultHandler {function} result handler callback 
    */
-  this.delete = function(index, type, id, options, resultHandler) {
+  this.delete = function(options, resultHandler) {
     var __args = arguments;
-    if (__args.length === 5 && typeof __args[0] === 'string' && typeof __args[1] === 'string' && typeof __args[2] === 'string' && (typeof __args[3] === 'object' && __args[3] != null) && typeof __args[4] === 'function') {
-      j_elasticSearchService["delete(java.lang.String,java.lang.String,java.lang.String,com.englishtown.vertx.elasticsearch.DeleteOptions,io.vertx.core.Handler)"](index, type, id, options != null ? new DeleteOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
+    if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
+      j_elasticSearchService["delete(com.englishtown.vertx.elasticsearch.DeleteOptions,io.vertx.core.Handler)"](options != null ? new DeleteOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
       if (ar.succeeded()) {
         resultHandler(utils.convReturnJson(ar.result()), null);
       } else {

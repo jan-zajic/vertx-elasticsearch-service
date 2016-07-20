@@ -54,6 +54,8 @@ public abstract class AbstractWriteOptions<T extends AbstractWriteOptions<T>> ex
     public JsonObject toJson() {
         JsonObject json = super.toJson();
 
+        json.put("writeOptionsType", this.getClass().getSimpleName());
+        
         if (getConsistencyLevel() != null) {
             json.put(FIELD_CONSISTENCY_LEVEL, getConsistencyLevel().toString().toLowerCase());
         }

@@ -1,13 +1,11 @@
 package com.englishtown.vertx.elasticsearch.integration;
 
-import com.englishtown.vertx.elasticsearch.*;
-import com.englishtown.vertx.elasticsearch.impl.DefaultElasticSearchService;
-import io.vertx.core.DeploymentOptions;
-import io.vertx.core.eventbus.DeliveryOptions;
-import io.vertx.core.eventbus.ReplyException;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.test.core.VertxTestBase;
+import static org.hamcrest.CoreMatchers.*;
+
+import java.util.Scanner;
+import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.TimeUnit;
+
 import org.elasticsearch.action.admin.cluster.health.ClusterHealthResponse;
 import org.elasticsearch.action.search.SearchType;
 import org.elasticsearch.cluster.health.ClusterHealthStatus;
@@ -18,11 +16,21 @@ import org.junit.FixMethodOrder;
 import org.junit.Test;
 import org.junit.runners.MethodSorters;
 
-import java.util.Scanner;
-import java.util.concurrent.CountDownLatch;
-import java.util.concurrent.TimeUnit;
+import com.englishtown.vertx.elasticsearch.DeleteOptions;
+import com.englishtown.vertx.elasticsearch.ElasticSearchAdminService;
+import com.englishtown.vertx.elasticsearch.ElasticSearchService;
+import com.englishtown.vertx.elasticsearch.IndexOptions;
+import com.englishtown.vertx.elasticsearch.SearchOptions;
+import com.englishtown.vertx.elasticsearch.SearchScrollOptions;
+import com.englishtown.vertx.elasticsearch.SuggestOptions;
+import com.englishtown.vertx.elasticsearch.impl.DefaultElasticSearchService;
 
-import static org.hamcrest.CoreMatchers.instanceOf;
+import io.vertx.core.DeploymentOptions;
+import io.vertx.core.eventbus.DeliveryOptions;
+import io.vertx.core.eventbus.ReplyException;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.test.core.VertxTestBase;
 
 /**
  * {@link com.englishtown.vertx.elasticsearch.ElasticSearchServiceVerticle} integration test
@@ -107,9 +115,13 @@ public abstract class IntegrationTestBase extends VertxTestBase {
                                 .add("1")
                                 .add("2")));
 
-        IndexOptions options = new IndexOptions().setId(id);
+        IndexOptions options = new IndexOptions()
+        		.setId(id)
+        		.setIndex(index)
+        		.setType(type)
+        		.setDoc(source);
 
-        service.index(index, type, source, options, result -> {
+        service.index(options, result -> {
 
             assertTrue(result.succeeded());
             JsonObject json = result.result();
@@ -254,8 +266,12 @@ public abstract class IntegrationTestBase extends VertxTestBase {
                     .put("message", source_message)
                     .put("message_suggest", source_message);
 
-
-            service.index(index, type, source, result2 -> {
+            IndexOptions indexOptions = new IndexOptions()
+            		.setIndex(index)
+            		.setType(type)
+            		.setDoc(source);
+            
+            service.index(indexOptions, result2 -> {
 
                 if (result2.failed()) {
                     result1.cause().printStackTrace();
@@ -294,7 +310,12 @@ public abstract class IntegrationTestBase extends VertxTestBase {
     @Test
     public void test99Delete() throws Exception {
 
-        service.delete(index, type, id, result -> {
+    	DeleteOptions deleteOptions = new DeleteOptions()
+        		.setIndex(index)
+        		.setType(type)
+        		.setId(id);
+    	
+        service.delete(deleteOptions, result -> {
 
             assertTrue(result.succeeded());
             JsonObject json = result.result();

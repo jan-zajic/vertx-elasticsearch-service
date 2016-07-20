@@ -33,39 +33,27 @@ public interface ElasticSearchService {
     /**
      * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/index_.html
      *
-     * @param index         the index name
-     * @param type          the type name
-     * @param source        the source to be indexed
-     * @param resultHandler result handler callback
-     */
-    @GenIgnore
-    @ProxyIgnore
-    default void index(String index, String type, JsonObject source, Handler<AsyncResult<JsonObject>> resultHandler) {
-        index(index, type, source, new IndexOptions(), resultHandler);
-    }
-
-    /**
-     * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/index_.html
-     *
-     * @param index         the index name
-     * @param type          the type name
-     * @param source        the source to be indexed
      * @param options       optional index options (id, timeout, ttl, etc.)
      * @param resultHandler result handler callback
      */
-    void index(String index, String type, JsonObject source, IndexOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
+    void index(IndexOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 
     /**
      * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/java-update-api.html
      *
-     * @param index         the index name
-     * @param type          the type name
-     * @param id            the source id to update
      * @param options       the update options (doc, script, etc.)
      * @param resultHandler result handler callback
      */
-    void update(String index, String type, String id, UpdateOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
+    void update(UpdateOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 
+    /**
+     * https://www.elastic.co/guide/en/elasticsearch/client/java-api/current/java-docs-bulk.html
+     *
+     * @param options       the bulk options
+     * @param resultHandler result handler callback
+     */
+    void bulk(BulkOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
+     
     /**
      * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/get.html
      *
@@ -129,27 +117,10 @@ public interface ElasticSearchService {
     /**
      * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/delete.html
      *
-     * @param index         the index name
-     * @param type          the type name
-     * @param id            the source id to delete
-     * @param resultHandler result handler callback
-     */
-    @GenIgnore
-    @ProxyIgnore
-    default void delete(String index, String type, String id, Handler<AsyncResult<JsonObject>> resultHandler) {
-        delete(index, type, id, new DeleteOptions(), resultHandler);
-    }
-
-    /**
-     * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/delete.html
-     *
-     * @param index         the index name
-     * @param type          the type name
-     * @param id            the source id to delete
      * @param options       optional delete options (timeout, etc.)
      * @param resultHandler result handler callback
      */
-    void delete(String index, String type, String id, DeleteOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
+    void delete(DeleteOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 
     /**
      * https://www.elastic.co/guide/en/elasticsearch/reference/current/search-suggesters.html

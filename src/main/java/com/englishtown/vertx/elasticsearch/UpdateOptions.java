@@ -14,6 +14,10 @@ import java.util.List;
 @DataObject
 public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
 
+	private String index;
+	private String type;
+	private String id;
+	
     private String script;
     private ScriptService.ScriptType scriptType;
     private String scriptLang;
@@ -26,6 +30,10 @@ public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
     private Boolean detectNoop;
     private Boolean scriptedUpsert;
 
+    public static final String FIELD_INDEX = "index";
+    public static final String FIELD_TYPE = "type";
+    public static final String FIELD_ID = "id";
+    
     public static final String FIELD_SCRIPT = "script";
     public static final String FIELD_SCRIPT_TYPE = "scriptType";
     public static final String FIELD_SCRIPT_LANG = "scriptLang";
@@ -47,7 +55,10 @@ public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
 
     public UpdateOptions(UpdateOptions other) {
         super(other);
-
+        index = other.getIndex();
+        type = other.getType();
+        id = other.getId();
+        
         script = other.getScript();
         scriptType = other.getScriptType();
         scriptLang = other.getScriptLang();
@@ -64,7 +75,10 @@ public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
     @SuppressWarnings("unchecked")
     public UpdateOptions(JsonObject json) {
         super(json);
-
+        index = json.getString(FIELD_INDEX);
+        type = json.getString(FIELD_TYPE);
+        id = json.getString(FIELD_ID);
+        
         script = json.getString(FIELD_SCRIPT);
         scriptLang = json.getString(FIELD_SCRIPT_LANG);
         scriptParams = json.getJsonObject(FIELD_SCRIPT_PARAMS);
@@ -104,8 +118,32 @@ public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
         this.scriptType = scriptType;
         return this;
     }
+    
+    public String getIndex() {
+		return index;
+	}
 
-    public ScriptService.ScriptType getScriptType() {
+	public void setIndex(String index) {
+		this.index = index;
+	}
+
+	public String getType() {
+		return type;
+	}
+
+	public void setType(String type) {
+		this.type = type;
+	}
+
+	public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	public ScriptService.ScriptType getScriptType() {
         return scriptType;
     }
 
@@ -194,6 +232,10 @@ public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
     public JsonObject toJson() {
         JsonObject json = super.toJson();
 
+        if(getIndex() != null) json.put(FIELD_INDEX, getIndex());
+        if(getType() != null) json.put(FIELD_TYPE, getType());
+        if(getId() != null) json.put(FIELD_ID, getId());
+        
         if (getScript() != null) json.put(FIELD_SCRIPT, getScript());
         if (getScriptLang() != null) json.put(FIELD_SCRIPT_LANG, getScriptLang());
         if (getScriptParams() != null) json.put(FIELD_SCRIPT_PARAMS, getScriptParams());
