@@ -9,6 +9,8 @@ import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
 import org.elasticsearch.action.ActionListener;
+import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
+import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.client.AdminClient;
@@ -57,6 +59,35 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
 
     }
 
+    @Override
+    public void createIndex(String index, JsonObject settings, JsonObject mappings, Handler<AsyncResult<JsonObject>> resultHandler) {
+    	CreateIndexRequestBuilder builder = getAdmin().indices()
+    			.prepareCreate(index);
+    	if(settings != null)
+    		builder.setSettings(settings.encode());
+    	if(mappings != null) {
+    		for (String key : mappings.getMap().keySet()) 
+    		{
+    			JsonObject source = mappings.getJsonObject(key);
+    			builder.addMapping(key, source.encode());
+    		}
+    	}
+    	
+    	builder.execute(new ActionListener<CreateIndexResponse>() {
+            @Override
+            public void onResponse(CreateIndexResponse putMappingResponse) {
+                JsonObject json = new JsonObject()
+                        .put("acknowledged", putMappingResponse.isAcknowledged());
+                resultHandler.handle(Future.succeededFuture(json));
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+                resultHandler.handle(Future.failedFuture(e));
+            }
+        });
+    }
+    
     /**
      * Returns the inner admin client
      *

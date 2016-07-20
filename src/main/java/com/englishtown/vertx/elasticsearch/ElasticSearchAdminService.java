@@ -44,4 +44,6 @@ public interface ElasticSearchAdminService {
 
     void putMapping(List<String> indices, String type, JsonObject source, MappingOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 
+    void createIndex(String index, JsonObject settings, JsonObject mappings, Handler<AsyncResult<JsonObject>> resultHandler);
+    
 }
