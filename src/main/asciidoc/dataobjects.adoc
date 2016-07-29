@@ -1,56 +1,5 @@
 = Cheatsheets
 
-[[SortOption]]
-== SortOption
-
-++++
- Sort option
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[field]]`field`|`String`|-
-|[[order]]`order`|`link:enums.html#SortOrder[SortOrder]`|-
-|===
-
-[[UpdateOptions]]
-== UpdateOptions
-
-++++
- Update operation options
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
-|[[detectNoop]]`detectNoop`|`Boolean`|-
-|[[doc]]`doc`|`Json object`|-
-|[[docAsUpsert]]`docAsUpsert`|`Boolean`|-
-|[[fields]]`fields`|`Array of String`|-
-|[[id]]`id`|`String`|-
-|[[index]]`index`|`String`|-
-|[[parent]]`parent`|`String`|-
-|[[refresh]]`refresh`|`Boolean`|-
-|[[retryOnConflict]]`retryOnConflict`|`Number (Integer)`|-
-|[[routing]]`routing`|`String`|-
-|[[script]]`script`|`String`|-
-|[[scriptLang]]`scriptLang`|`String`|-
-|[[scriptParams]]`scriptParams`|`Json object`|-
-|[[scriptType]]`scriptType`|`link:enums.html#ScriptType[ScriptType]`|-
-|[[scriptedUpsert]]`scriptedUpsert`|`Boolean`|-
-|[[timeout]]`timeout`|`String`|-
-|[[type]]`type`|`String`|-
-|[[upsert]]`upsert`|`Json object`|-
-|[[version]]`version`|`Number (Long)`|-
-|[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
-|===
-
 [[DeleteOptions]]
 == DeleteOptions
 
@@ -64,15 +13,79 @@
 |===
 ^|Name | Type ^| Description
 |[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
-|[[id]]`id`|`String`|-
-|[[index]]`index`|`String`|-
 |[[parent]]`parent`|`String`|-
 |[[refresh]]`refresh`|`Boolean`|-
 |[[routing]]`routing`|`String`|-
 |[[timeout]]`timeout`|`String`|-
-|[[type]]`type`|`String`|-
 |[[version]]`version`|`Number (Long)`|-
 |[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
+|===
+
+[[GetOptions]]
+== GetOptions
+
+++++
+ Get operation options
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[fetchSource]]`fetchSource`|`Boolean`|-
+|[[fetchSourceExcludes]]`fetchSourceExcludes`|`Array of String`|-
+|[[fetchSourceIncludes]]`fetchSourceIncludes`|`Array of String`|-
+|[[fields]]`fields`|`Array of String`|-
+|[[ignoreErrorsOnGeneratedFields]]`ignoreErrorsOnGeneratedFields`|`Boolean`|-
+|[[parent]]`parent`|`String`|-
+|[[preference]]`preference`|`String`|-
+|[[realtime]]`realtime`|`Boolean`|-
+|[[refresh]]`refresh`|`Boolean`|-
+|[[routing]]`routing`|`String`|-
+|[[transformSource]]`transformSource`|`Boolean`|-
+|[[version]]`version`|`Number (Long)`|-
+|[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
+|===
+
+[[IndexOptions]]
+== IndexOptions
+
+++++
+ Index operation options
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
+|[[id]]`id`|`String`|-
+|[[opType]]`opType`|`link:enums.html#OpType[OpType]`|-
+|[[parent]]`parent`|`String`|-
+|[[refresh]]`refresh`|`Boolean`|-
+|[[routing]]`routing`|`String`|-
+|[[timeout]]`timeout`|`String`|-
+|[[timestamp]]`timestamp`|`String`|-
+|[[ttl]]`ttl`|`Number (Long)`|-
+|[[version]]`version`|`Number (Long)`|-
+|[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
+|===
+
+[[MappingOptions]]
+== MappingOptions
+
+++++
+ Options for admin put mapping operations
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[ignoreConflicts]]`ignoreConflicts`|`Boolean`|-
 |===
 
 [[SearchOptions]]
@@ -112,11 +125,11 @@
 |[[version]]`version`|`Boolean`|-
 |===
 
-[[IndexOptions]]
-== IndexOptions
+[[SearchScrollOptions]]
+== SearchScrollOptions
 
 ++++
- Index operation options
+ Search scroll options
 ++++
 '''
 
@@ -124,20 +137,23 @@
 [frame="topbot"]
 |===
 ^|Name | Type ^| Description
-|[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
-|[[doc]]`doc`|`Json object`|-
-|[[id]]`id`|`String`|-
-|[[index]]`index`|`String`|-
-|[[opType]]`opType`|`link:enums.html#OpType[OpType]`|-
-|[[parent]]`parent`|`String`|-
-|[[refresh]]`refresh`|`Boolean`|-
-|[[routing]]`routing`|`String`|-
-|[[timeout]]`timeout`|`String`|-
-|[[timestamp]]`timestamp`|`String`|-
-|[[ttl]]`ttl`|`Number (Long)`|-
-|[[type]]`type`|`String`|-
-|[[version]]`version`|`Number (Long)`|-
-|[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
+|[[scroll]]`scroll`|`String`|-
+|===
+
+[[SortOption]]
+== SortOption
+
+++++
+ Sort option
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[field]]`field`|`String`|-
+|[[order]]`order`|`link:enums.html#SortOrder[SortOrder]`|-
 |===
 
 [[SuggestOptions]]
@@ -162,53 +178,11 @@
 |[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
 |===
 
-[[MappingOptions]]
-== MappingOptions
+[[UpdateOptions]]
+== UpdateOptions
 
 ++++
- Options for admin put mapping operations
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[ignoreConflicts]]`ignoreConflicts`|`Boolean`|-
-|===
-
-[[GetOptions]]
-== GetOptions
-
-++++
- Get operation options
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[fetchSource]]`fetchSource`|`Boolean`|-
-|[[fetchSourceExcludes]]`fetchSourceExcludes`|`Array of String`|-
-|[[fetchSourceIncludes]]`fetchSourceIncludes`|`Array of String`|-
-|[[fields]]`fields`|`Array of String`|-
-|[[ignoreErrorsOnGeneratedFields]]`ignoreErrorsOnGeneratedFields`|`Boolean`|-
-|[[parent]]`parent`|`String`|-
-|[[preference]]`preference`|`String`|-
-|[[realtime]]`realtime`|`Boolean`|-
-|[[refresh]]`refresh`|`Boolean`|-
-|[[routing]]`routing`|`String`|-
-|[[transformSource]]`transformSource`|`Boolean`|-
-|[[version]]`version`|`Number (Long)`|-
-|[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
-|===
-
-[[BulkOptions]]
-== BulkOptions
-
-++++
- Bulk operation options
+ Update operation options
 ++++
 '''
 
@@ -217,26 +191,22 @@
 |===
 ^|Name | Type ^| Description
 |[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
+|[[detectNoop]]`detectNoop`|`Boolean`|-
+|[[doc]]`doc`|`Json object`|-
+|[[docAsUpsert]]`docAsUpsert`|`Boolean`|-
+|[[fields]]`fields`|`Array of String`|-
 |[[parent]]`parent`|`String`|-
 |[[refresh]]`refresh`|`Boolean`|-
+|[[retryOnConflict]]`retryOnConflict`|`Number (Integer)`|-
 |[[routing]]`routing`|`String`|-
+|[[script]]`script`|`String`|-
+|[[scriptLang]]`scriptLang`|`String`|-
+|[[scriptParams]]`scriptParams`|`Json object`|-
+|[[scriptType]]`scriptType`|`link:enums.html#ScriptType[ScriptType]`|-
+|[[scriptedUpsert]]`scriptedUpsert`|`Boolean`|-
 |[[timeout]]`timeout`|`String`|-
+|[[upsert]]`upsert`|`Json object`|-
 |[[version]]`version`|`Number (Long)`|-
 |[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
-|===
-
-[[SearchScrollOptions]]
-== SearchScrollOptions
-
-++++
- Search scroll options
-++++
-'''
-
-[cols=">25%,^25%,50%"]
-[frame="topbot"]
-|===
-^|Name | Type ^| Description
-|[[scroll]]`scroll`|`String`|-
 |===
 
