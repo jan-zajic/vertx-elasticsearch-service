@@ -8,6 +8,9 @@ import io.vertx.core.AsyncResult;
 import io.vertx.core.Future;
 import io.vertx.core.Handler;
 import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
+
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
@@ -23,6 +26,7 @@ import java.util.List;
  */
 public class DefaultElasticSearchAdminService implements InternalElasticSearchAdminService {
 
+	private static final Logger LOGGER = LoggerFactory.getLogger(DefaultElasticSearchAdminService.class);
     private final InternalElasticSearchService service;
 
     @Inject
@@ -53,7 +57,7 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
 
             @Override
             public void onFailure(Throwable e) {
-                resultHandler.handle(Future.failedFuture(e));
+            	onError("cannot put mapping for type "+type, e, resultHandler);
             }
         });
 
@@ -83,7 +87,7 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
 
             @Override
             public void onFailure(Throwable e) {
-                resultHandler.handle(Future.failedFuture(e));
+            	onError("cannot create index "+index, e, resultHandler);
             }
         });
     }
@@ -98,4 +102,10 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
         return service.getClient().admin();
     }
 
+	private void onError(String message, Throwable t, Handler<AsyncResult<JsonObject>> resultHandler) 
+	{
+		service.onError(message, t, resultHandler);		
+	}
+
+    
 }

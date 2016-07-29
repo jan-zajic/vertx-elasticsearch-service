@@ -1,14 +1,11 @@
 package com.englishtown.vertx.elasticsearch.impl;
 
-import com.englishtown.vertx.elasticsearch.*;
-import com.englishtown.vertx.elasticsearch.internal.InternalElasticSearchService;
-import io.vertx.core.AsyncResult;
-import io.vertx.core.Future;
-import io.vertx.core.Handler;
-import io.vertx.core.json.JsonArray;
-import io.vertx.core.json.JsonObject;
-import io.vertx.core.logging.Logger;
-import io.vertx.core.logging.LoggerFactory;
+import java.io.IOException;
+import java.nio.charset.Charset;
+import java.util.List;
+import java.util.Map;
+
+import javax.inject.Inject;
 
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.bulk.BulkItemResponse;
@@ -38,12 +35,28 @@ import org.elasticsearch.common.xcontent.XContentFactory;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.Template;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
+import org.elasticsearch.transport.RemoteTransportException;
 
-import javax.inject.Inject;
-import java.io.IOException;
-import java.nio.charset.Charset;
-import java.util.List;
-import java.util.Map;
+import com.englishtown.vertx.elasticsearch.AbstractWriteOptions;
+import com.englishtown.vertx.elasticsearch.BulkOptions;
+import com.englishtown.vertx.elasticsearch.DeleteOptions;
+import com.englishtown.vertx.elasticsearch.ElasticSearchConfigurator;
+import com.englishtown.vertx.elasticsearch.GetOptions;
+import com.englishtown.vertx.elasticsearch.IndexOptions;
+import com.englishtown.vertx.elasticsearch.SearchOptions;
+import com.englishtown.vertx.elasticsearch.SearchScrollOptions;
+import com.englishtown.vertx.elasticsearch.SuggestOptions;
+import com.englishtown.vertx.elasticsearch.TransportClientFactory;
+import com.englishtown.vertx.elasticsearch.UpdateOptions;
+import com.englishtown.vertx.elasticsearch.internal.InternalElasticSearchService;
+
+import io.vertx.core.AsyncResult;
+import io.vertx.core.Future;
+import io.vertx.core.Handler;
+import io.vertx.core.json.JsonArray;
+import io.vertx.core.json.JsonObject;
+import io.vertx.core.logging.Logger;
+import io.vertx.core.logging.LoggerFactory;
 
 /**
  * Default implementation of {@link com.englishtown.vertx.elasticsearch.ElasticSearchService}
@@ -110,8 +123,9 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable t) {
-                resultHandler.handle(Future.failedFuture(t));
+            	onError("cannot index "+options.getId(), t,  resultHandler);
             }
+
         });
 
     }
@@ -155,7 +169,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable e) {
-                resultHandler.handle(Future.failedFuture(e));
+            	onError("cannot update "+options.getId(), e,  resultHandler);
             }
         });
 
@@ -239,7 +253,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
              @Override
              public void onFailure(Throwable e) {
-                 resultHandler.handle(Future.failedFuture(e));
+            	 onError("cannot execute bulk", e,  resultHandler);
              }
          });
     }
@@ -303,7 +317,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable t) {
-                resultHandler.handle(Future.failedFuture(t));
+            	onError("cannot get "+id, t,  resultHandler);
             }
         });
 
@@ -362,7 +376,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable t) {
-                resultHandler.handle(Future.failedFuture(t));
+            	onError("cannot execute search query", t,  resultHandler);
             }
         });
     }
@@ -385,7 +399,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable t) {
-                resultHandler.handle(Future.failedFuture(t));
+            	onError("", t,  resultHandler);
             }
         });
 
@@ -408,7 +422,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable t) {
-                resultHandler.handle(Future.failedFuture(t));
+            	onError("cannot delete "+options.getId(), t,  resultHandler);
             }
         });
 
@@ -459,7 +473,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
             @Override
             public void onFailure(Throwable t) {
-                resultHandler.handle(Future.failedFuture(t));
+            	onError("cannot suggest", t,  resultHandler);
             }
         });
 
@@ -486,4 +500,25 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
     }
 
+	public static void onError(String message, Throwable t, boolean logIt, Handler<AsyncResult<JsonObject>> resultHandler) 
+	{
+		if(logIt)
+			LOGGER.warn(message, t);
+		if(t instanceof RemoteTransportException)
+		{
+			RemoteTransportException rt = (RemoteTransportException) t;
+			t = rt.getCause();
+		}    	
+        resultHandler.handle(Future.failedFuture(t));
+	}
+
+	public ElasticSearchConfigurator getConfigurator() {
+		return configurator;
+	}
+
+	@Override
+	public void onError(String message, Throwable t, Handler<AsyncResult<JsonObject>> resultHandler) {
+		onError(message, t, configurator.isLogging(), resultHandler);
+	}
+	
 }

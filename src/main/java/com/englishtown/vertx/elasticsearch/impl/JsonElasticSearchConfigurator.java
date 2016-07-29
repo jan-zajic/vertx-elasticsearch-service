@@ -21,6 +21,7 @@ public class JsonElasticSearchConfigurator implements ElasticSearchConfigurator 
     protected boolean clientTransportSniff;
     protected final List<TransportAddress> transportAddresses = new ArrayList<>();
     protected boolean requireUnits;
+    protected boolean logging;
 
     public static final String CONFIG_NAME = "elasticsearch";
     public static final String CONFIG_TRANSPORT_ADDRESSES = "transportAddresses";
@@ -50,9 +51,14 @@ public class JsonElasticSearchConfigurator implements ElasticSearchConfigurator 
         initClientTransportSniff(config);
         initTransportAddresses(config);
         initRequireUnits(config);
+        initLogging(config);
     }
 
-    protected void initClusterName(JsonObject config) {
+    private void initLogging(JsonObject config) {
+    	logging = config.getBoolean("logging", false);
+	}
+
+	protected void initClusterName(JsonObject config) {
         clusterName = config.getString("cluster_name", "elasticsearch");
     }
 
@@ -105,4 +111,10 @@ public class JsonElasticSearchConfigurator implements ElasticSearchConfigurator 
     public List<TransportAddress> getTransportAddresses() {
         return transportAddresses;
     }
+    
+    @Override
+    public boolean isLogging() {
+    	return logging;
+    }
+    
 }

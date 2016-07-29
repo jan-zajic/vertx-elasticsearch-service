@@ -17,4 +17,6 @@ public interface ElasticSearchConfigurator {
 
     List<TransportAddress> getTransportAddresses();
 
+    boolean isLogging();
+    
 }
