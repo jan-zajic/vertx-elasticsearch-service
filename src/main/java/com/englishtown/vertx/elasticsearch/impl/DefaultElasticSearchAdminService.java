@@ -14,6 +14,8 @@ import io.vertx.core.logging.LoggerFactory;
 import org.elasticsearch.action.ActionListener;
 import org.elasticsearch.action.admin.indices.create.CreateIndexRequestBuilder;
 import org.elasticsearch.action.admin.indices.create.CreateIndexResponse;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexRequestBuilder;
+import org.elasticsearch.action.admin.indices.delete.DeleteIndexResponse;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingRequestBuilder;
 import org.elasticsearch.action.admin.indices.mapping.put.PutMappingResponse;
 import org.elasticsearch.client.AdminClient;
@@ -88,6 +90,26 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
             @Override
             public void onFailure(Throwable e) {
             	onError("cannot create index "+index, e, resultHandler);
+            }
+        });
+    }
+    
+    @Override
+    public void deleteIndex(String index, Handler<AsyncResult<JsonObject>> resultHandler) {
+    	DeleteIndexRequestBuilder builder = getAdmin().indices()
+    			.prepareDelete(index);
+    	
+    	builder.execute(new ActionListener<DeleteIndexResponse>() {
+            @Override
+            public void onResponse(DeleteIndexResponse putMappingResponse) {
+                JsonObject json = new JsonObject()
+                        .put("acknowledged", putMappingResponse.isAcknowledged());
+                resultHandler.handle(Future.succeededFuture(json));
+            }
+
+            @Override
+            public void onFailure(Throwable e) {
+            	onError("cannot delete index "+index, e, resultHandler);
             }
         });
     }

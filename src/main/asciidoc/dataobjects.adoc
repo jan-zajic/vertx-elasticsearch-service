@@ -1,5 +1,26 @@
 = Cheatsheets
 
+[[BulkOptions]]
+== BulkOptions
+
+++++
+ Bulk operation options
+++++
+'''
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
+|[[parent]]`parent`|`String`|-
+|[[refresh]]`refresh`|`Boolean`|-
+|[[routing]]`routing`|`String`|-
+|[[timeout]]`timeout`|`String`|-
+|[[version]]`version`|`Number (Long)`|-
+|[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
+|===
+
 [[DeleteOptions]]
 == DeleteOptions
 
@@ -13,10 +34,13 @@
 |===
 ^|Name | Type ^| Description
 |[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
+|[[id]]`id`|`String`|-
+|[[index]]`index`|`String`|-
 |[[parent]]`parent`|`String`|-
 |[[refresh]]`refresh`|`Boolean`|-
 |[[routing]]`routing`|`String`|-
 |[[timeout]]`timeout`|`String`|-
+|[[type]]`type`|`String`|-
 |[[version]]`version`|`Number (Long)`|-
 |[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
 |===
@@ -61,7 +85,9 @@
 |===
 ^|Name | Type ^| Description
 |[[consistencyLevel]]`consistencyLevel`|`link:enums.html#WriteConsistencyLevel[WriteConsistencyLevel]`|-
+|[[doc]]`doc`|`Json object`|-
 |[[id]]`id`|`String`|-
+|[[index]]`index`|`String`|-
 |[[opType]]`opType`|`link:enums.html#OpType[OpType]`|-
 |[[parent]]`parent`|`String`|-
 |[[refresh]]`refresh`|`Boolean`|-
@@ -69,6 +95,7 @@
 |[[timeout]]`timeout`|`String`|-
 |[[timestamp]]`timestamp`|`String`|-
 |[[ttl]]`ttl`|`Number (Long)`|-
+|[[type]]`type`|`String`|-
 |[[version]]`version`|`Number (Long)`|-
 |[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-
 |===
@@ -195,6 +222,8 @@
 |[[doc]]`doc`|`Json object`|-
 |[[docAsUpsert]]`docAsUpsert`|`Boolean`|-
 |[[fields]]`fields`|`Array of String`|-
+|[[id]]`id`|`String`|-
+|[[index]]`index`|`String`|-
 |[[parent]]`parent`|`String`|-
 |[[refresh]]`refresh`|`Boolean`|-
 |[[retryOnConflict]]`retryOnConflict`|`Number (Integer)`|-
@@ -205,6 +234,7 @@
 |[[scriptType]]`scriptType`|`link:enums.html#ScriptType[ScriptType]`|-
 |[[scriptedUpsert]]`scriptedUpsert`|`Boolean`|-
 |[[timeout]]`timeout`|`String`|-
+|[[type]]`type`|`String`|-
 |[[upsert]]`upsert`|`Json object`|-
 |[[version]]`version`|`Number (Long)`|-
 |[[versionType]]`versionType`|`link:enums.html#VersionType[VersionType]`|-

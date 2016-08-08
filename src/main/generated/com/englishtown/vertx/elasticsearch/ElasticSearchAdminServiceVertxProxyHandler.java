@@ -132,6 +132,10 @@ public class ElasticSearchAdminServiceVertxProxyHandler extends ProxyHandler {
           service.createIndex((java.lang.String)json.getValue("index"), (io.vertx.core.json.JsonObject)json.getValue("settings"), (io.vertx.core.json.JsonObject)json.getValue("mappings"), createHandler(msg));
           break;
         }
+        case "deleteIndex": {
+          service.deleteIndex((java.lang.String)json.getValue("index"), createHandler(msg));
+          break;
+        }
         default: {
           throw new IllegalStateException("Invalid action: " + action);
         }

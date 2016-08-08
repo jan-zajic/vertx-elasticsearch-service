@@ -46,4 +46,6 @@ public interface ElasticSearchAdminService {
 
     void createIndex(String index, JsonObject settings, JsonObject mappings, Handler<AsyncResult<JsonObject>> resultHandler);
     
+    void deleteIndex(String index, Handler<AsyncResult<JsonObject>> resultHandler);
+    
 }
