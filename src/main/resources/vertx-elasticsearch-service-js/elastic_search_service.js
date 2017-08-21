@@ -21,6 +21,7 @@ var Vertx = require('vertx-js/vertx');
 var io = Packages.io;
 var JsonObject = io.vertx.core.json.JsonObject;
 var JElasticSearchService = com.englishtown.vertx.elasticsearch.ElasticSearchService;
+var MultiGetRequest = com.englishtown.vertx.elasticsearch.MultiGetRequest;
 var DeleteOptions = com.englishtown.vertx.elasticsearch.DeleteOptions;
 var UpdateOptions = com.englishtown.vertx.elasticsearch.UpdateOptions;
 var SearchOptions = com.englishtown.vertx.elasticsearch.SearchOptions;
@@ -138,6 +139,26 @@ var ElasticSearchService = function(j_val) {
     var __args = arguments;
     if (__args.length === 5 && typeof __args[0] === 'string' && typeof __args[1] === 'string' && typeof __args[2] === 'string' && (typeof __args[3] === 'object' && __args[3] != null) && typeof __args[4] === 'function') {
       j_elasticSearchService["get(java.lang.String,java.lang.String,java.lang.String,com.englishtown.vertx.elasticsearch.GetOptions,io.vertx.core.Handler)"](index, type, id, options != null ? new GetOptions(new JsonObject(JSON.stringify(options))) : null, function(ar) {
+      if (ar.succeeded()) {
+        resultHandler(utils.convReturnJson(ar.result()), null);
+      } else {
+        resultHandler(null, ar.cause());
+      }
+    });
+    } else throw new TypeError('function invoked with invalid arguments');
+  };
+
+  /**
+   http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/multi-get.html
+
+   @public
+   @param docs {Object} documens to fetch 
+   @param resultHandler {function} result handler callback 
+   */
+  this.mget = function(docs, resultHandler) {
+    var __args = arguments;
+    if (__args.length === 2 && (typeof __args[0] === 'object' && __args[0] != null) && typeof __args[1] === 'function') {
+      j_elasticSearchService["mget(com.englishtown.vertx.elasticsearch.MultiGetRequest,io.vertx.core.Handler)"](docs != null ? new MultiGetRequest(new JsonObject(JSON.stringify(docs))) : null, function(ar) {
       if (ar.succeeded()) {
         resultHandler(utils.convReturnJson(ar.result()), null);
       } else {

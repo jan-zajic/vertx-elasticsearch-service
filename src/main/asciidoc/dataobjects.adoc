@@ -115,6 +115,16 @@
 |[[ignoreConflicts]]`ignoreConflicts`|`Boolean`|-
 |===
 
+[[MultiGetRequest]]
+== MultiGetRequest
+
+
+[cols=">25%,^25%,50%"]
+[frame="topbot"]
+|===
+^|Name | Type ^| Description
+|===
+
 [[SearchOptions]]
 == SearchOptions
 
@@ -187,7 +197,6 @@
 == SuggestOptions
 
 ++++
- @author marcus
 ++++
 '''
 

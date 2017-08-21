@@ -18,7 +18,7 @@ public class UpdateOptionsTest {
                 .setScript("script", ScriptService.ScriptType.INLINE);
 
         JsonObject json1 = options1.toJson();
-        assertEquals(2, json1.fieldNames().size());
+        assertEquals(3, json1.fieldNames().size());
 
         UpdateOptions options2 = new UpdateOptions(json1);
         JsonObject json2 = options2.toJson();
@@ -39,7 +39,7 @@ public class UpdateOptionsTest {
                 .setScriptedUpsert(true);
 
         json1 = options1.toJson();
-        assertEquals(11, json1.fieldNames().size());
+        assertEquals(12, json1.fieldNames().size());
 
         options2 = new UpdateOptions(json1);
         json2 = options2.toJson();

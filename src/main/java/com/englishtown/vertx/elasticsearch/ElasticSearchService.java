@@ -79,6 +79,14 @@ public interface ElasticSearchService {
      */
     void get(String index, String type, String id, GetOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 
+    /**
+     * http://www.elastic.co/guide/en/elasticsearch/client/java-api/1.4/multi-get.html
+     *
+     * @param docs	documens to fetch
+     * @param resultHandler result handler callback
+     */
+    void mget(MultiGetRequest docs, Handler<AsyncResult<JsonObject>> resultHandler);
+    
     @GenIgnore
     @ProxyIgnore
     default void search(String index, Handler<AsyncResult<JsonObject>> resultHandler) {

@@ -37,6 +37,7 @@ import io.vertx.core.Vertx;
 import com.englishtown.vertx.elasticsearch.BulkOptions;
 import com.englishtown.vertx.elasticsearch.GetOptions;
 import java.util.List;
+import com.englishtown.vertx.elasticsearch.MultiGetRequest;
 import com.englishtown.vertx.elasticsearch.ElasticSearchService;
 import com.englishtown.vertx.elasticsearch.UpdateOptions;
 import com.englishtown.vertx.elasticsearch.SearchOptions;
@@ -51,6 +52,7 @@ import com.englishtown.vertx.elasticsearch.SearchScrollOptions;
   Generated Proxy code - DO NOT EDIT
   @author Roger the Robot
 */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
 
   private Vertx _vertx;
@@ -144,6 +146,24 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     _json.put("options", options == null ? null : options.toJson());
     DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
     _deliveryOptions.addHeader("action", "get");
+    _vertx.eventBus().<JsonObject>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      } else {
+        resultHandler.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
+  }
+
+  public void mget(MultiGetRequest docs, Handler<AsyncResult<JsonObject>> resultHandler) {
+    if (closed) {
+      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
+    }
+    JsonObject _json = new JsonObject();
+    _json.put("docs", docs == null ? null : docs.toJson());
+    DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "mget");
     _vertx.eventBus().<JsonObject>send(_address, _json, _deliveryOptions, res -> {
       if (res.failed()) {
         resultHandler.handle(Future.failedFuture(res.cause()));

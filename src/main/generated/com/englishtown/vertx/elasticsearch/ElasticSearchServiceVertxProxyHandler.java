@@ -44,6 +44,7 @@ import io.vertx.core.Vertx;
 import com.englishtown.vertx.elasticsearch.BulkOptions;
 import com.englishtown.vertx.elasticsearch.GetOptions;
 import java.util.List;
+import com.englishtown.vertx.elasticsearch.MultiGetRequest;
 import com.englishtown.vertx.elasticsearch.ElasticSearchService;
 import com.englishtown.vertx.elasticsearch.UpdateOptions;
 import com.englishtown.vertx.elasticsearch.SearchOptions;
@@ -58,6 +59,7 @@ import com.englishtown.vertx.elasticsearch.SearchScrollOptions;
   Generated Proxy code - DO NOT EDIT
   @author Roger the Robot
 */
+@SuppressWarnings({"unchecked", "rawtypes"})
 public class ElasticSearchServiceVertxProxyHandler extends ProxyHandler {
 
   public static final long DEFAULT_CONNECTION_TIMEOUT = 5 * 60; // 5 minutes 
@@ -153,6 +155,10 @@ public class ElasticSearchServiceVertxProxyHandler extends ProxyHandler {
         }
         case "get": {
           service.get((java.lang.String)json.getValue("index"), (java.lang.String)json.getValue("type"), (java.lang.String)json.getValue("id"), json.getJsonObject("options") == null ? null : new com.englishtown.vertx.elasticsearch.GetOptions(json.getJsonObject("options")), createHandler(msg));
+          break;
+        }
+        case "mget": {
+          service.mget(json.getJsonObject("docs") == null ? null : new com.englishtown.vertx.elasticsearch.MultiGetRequest(json.getJsonObject("docs")), createHandler(msg));
           break;
         }
         case "search": {

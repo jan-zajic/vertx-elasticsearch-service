@@ -19,7 +19,7 @@ public class DeleteOptionsTest {
                 .setParent("parent");
         JsonObject json1 = options1.toJson();
 
-        assertEquals("{\"parent\":\"parent\"}", json1.encode());
+        assertEquals("{\"parent\":\"parent\",\"writeOptionsType\":\"DeleteOptions\"}", json1.encode());
 
         options1 = new DeleteOptions()
                 .setConsistencyLevel(WriteConsistencyLevel.ALL)
@@ -32,7 +32,7 @@ public class DeleteOptionsTest {
 
         json1 = options1.toJson();
 
-        assertEquals(7, json1.fieldNames().size());
+        assertEquals(8, json1.fieldNames().size());
 
         DeleteOptions options2 = new DeleteOptions(json1);
         JsonObject json2 = options2.toJson();

@@ -20,7 +20,7 @@ public class IndexOptionsTest {
                 .setId("test_id");
 
         JsonObject json1 = options1.toJson();
-        assertEquals(1, json1.fieldNames().size());
+        assertEquals(2, json1.fieldNames().size());
 
         IndexOptions options2 = new IndexOptions(json1);
         JsonObject json2 = options2.toJson();
@@ -40,7 +40,7 @@ public class IndexOptionsTest {
                 .setTimeout("timeout");
 
         json1 = options1.toJson();
-        assertEquals(11, json1.fieldNames().size());
+        assertEquals(12, json1.fieldNames().size());
 
         options2 = new IndexOptions(json1);
         json2 = options2.toJson();
