@@ -434,7 +434,8 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 			}
 		}
 
-		LOGGER.info("ElasticSearch Query using Java Client API:\n" + builder.internalBuilder());
+		if(LOGGER.isDebugEnabled())
+			LOGGER.debug("ElasticSearch Query using Java Client API:\n" + builder.internalBuilder());
 
 		builder.execute(new ActionListener<SearchResponse>() {
 			@Override
