@@ -1,6 +1,7 @@
 package com.englishtown.vertx.elasticsearch;
 
 import io.vertx.core.AbstractVerticle;
+import io.vertx.core.Future;
 import io.vertx.serviceproxy.ProxyHelper;
 
 import javax.inject.Inject;
@@ -20,8 +21,7 @@ public class ElasticSearchServiceVerticle extends AbstractVerticle {
     }
 
     @Override
-    public void start() throws Exception {
-
+    public void start(Future<Void> startFuture) throws Exception {
         String address = config().getString("address");
         if (address == null || address.isEmpty()) {
             throw new IllegalStateException("address field must be specified in config for service verticle");
@@ -34,10 +34,8 @@ public class ElasticSearchServiceVerticle extends AbstractVerticle {
         // Register service as an event bus proxy
         ProxyHelper.registerService(ElasticSearchService.class, vertx, service, address);
         ProxyHelper.registerService(ElasticSearchAdminService.class, vertx, adminService, adminAddress);
-
-        // Start the service
-        service.start();
-
+        // Start the service        
+        vertx.executeBlocking(future -> { service.start(); future.complete(); }, res -> startFuture.complete());       
     }
 
     @Override
