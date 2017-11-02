@@ -30,12 +30,14 @@ public class ElasticSearchServiceVerticle extends AbstractVerticle {
         if (adminAddress == null || adminAddress.isEmpty()) {
             adminAddress = address + ".admin";
         }
-
-        // Register service as an event bus proxy
-        ProxyHelper.registerService(ElasticSearchService.class, vertx, service, address);
-        ProxyHelper.registerService(ElasticSearchAdminService.class, vertx, adminService, adminAddress);
+        final String effectiveAdminAddress = adminAddress;
         // Start the service        
-        vertx.executeBlocking(future -> { service.start(); future.complete(); }, res -> startFuture.complete());       
+        vertx.executeBlocking(future -> { service.start(); future.complete(); }, res -> {
+        	// Register service as an event bus proxy
+          ProxyHelper.registerService(ElasticSearchService.class, vertx, service, address);
+          ProxyHelper.registerService(ElasticSearchAdminService.class, vertx, adminService, effectiveAdminAddress);
+        	startFuture.complete();
+        });       
     }
 
     @Override

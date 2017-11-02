@@ -95,7 +95,6 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
 	@Override
 	public void start() {
-
 		Settings.setSettingsRequireUnits(configurator.getSettingsRequireUnits());
 
 		Settings settings = Settings

@@ -44,11 +44,6 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
                 .setType(type)
                 .setSource(source.encode());
 
-        // TODO: PutMappingRequestBuilder setIgnoreConflicts() was removed in ES 2.0.0
-//        if (options != null) {
-//            if (options.shouldIgnoreConflicts() != null) builder.setIgnoreConflicts(options.shouldIgnoreConflicts());
-//        }
-
         builder.execute(new ActionListener<PutMappingResponse>() {
             @Override
             public void onResponse(PutMappingResponse putMappingResponse) {
@@ -121,7 +116,11 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
      */
     @Override
     public AdminClient getAdmin() {
+    	try {
         return service.getClient().admin();
+    	} catch(NullPointerException e) {
+    		throw e;
+    	}
     }
 
 	private void onError(String message, Throwable t, Handler<AsyncResult<JsonObject>> resultHandler) 
