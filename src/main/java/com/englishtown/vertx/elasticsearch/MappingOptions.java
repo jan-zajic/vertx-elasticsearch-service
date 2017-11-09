@@ -10,8 +10,10 @@ import io.vertx.core.json.JsonObject;
 public class MappingOptions {
 
     private Boolean ignoreConflicts;
+    private Boolean updateAllTypes;
 
     public static final String JSON_FIELD_IGNORE_CONFLICTS = "ignoreConflicts";
+    public static final String JSON_FIELD_UPDATE_ALL_TYPES = "updateAllTypes";
 
     public MappingOptions() {
     }
@@ -21,9 +23,8 @@ public class MappingOptions {
     }
 
     public MappingOptions(JsonObject json) {
-
         ignoreConflicts = json.getBoolean(JSON_FIELD_IGNORE_CONFLICTS);
-
+        updateAllTypes = json.getBoolean(JSON_FIELD_UPDATE_ALL_TYPES);
     }
 
     public Boolean shouldIgnoreConflicts() {
@@ -35,11 +36,18 @@ public class MappingOptions {
         return this;
     }
 
-    public JsonObject toJson() {
+    public Boolean getUpdateAllTypes() {
+			return updateAllTypes;
+		}
+
+		public void setUpdateAllTypes(Boolean updateAllTypes) {
+			this.updateAllTypes = updateAllTypes;
+		}
+
+		public JsonObject toJson() {
         JsonObject json = new JsonObject();
-
         if (ignoreConflicts != null) json.put(JSON_FIELD_IGNORE_CONFLICTS, ignoreConflicts);
-
+        if (updateAllTypes != null) json.put(JSON_FIELD_UPDATE_ALL_TYPES, updateAllTypes);
         return json;
     }
 

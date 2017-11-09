@@ -42,6 +42,7 @@ public class DefaultElasticSearchAdminService implements InternalElasticSearchAd
         PutMappingRequestBuilder builder = getAdmin().indices()
                 .preparePutMapping(indices.toArray(new String[indices.size()]))
                 .setType(type)
+                .setUpdateAllTypes(options.getUpdateAllTypes() != null ? options.getUpdateAllTypes() : false)
                 .setSource(source.encode());
 
         builder.execute(new ActionListener<PutMappingResponse>() {
