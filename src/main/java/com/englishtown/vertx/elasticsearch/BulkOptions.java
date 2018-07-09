@@ -20,10 +20,12 @@ public class BulkOptions extends AbstractWriteOptions<BulkOptions> {
 	}
 	
 	public BulkOptions(BulkOptions other) {
+		super(other);
 		this.writeOptions = other.writeOptions;
 	}
 	
 	public BulkOptions(JsonObject json) {
+		super(json);
 		if(json.containsKey("writeOptions")) {
 			JsonArray array = json.getJsonArray("writeOptions");
 			for(int i = 0; i < array.size(); i++) {
