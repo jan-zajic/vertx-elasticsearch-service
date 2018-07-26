@@ -141,6 +141,10 @@ public interface ElasticSearchService {
 
     /**
      * https://www.elastic.co/guide/en/elasticsearch/reference/2.3/docs-update-by-query.html
+     * 
+     * @param indices       optional the indices names
+     * @param options       suggest options
+     * @param resultHandler result handler callback
      */
     void updateByQuery(List<String> indices, UpdateByQueryOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 }

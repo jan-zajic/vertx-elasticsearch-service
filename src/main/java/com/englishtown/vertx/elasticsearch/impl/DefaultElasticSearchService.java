@@ -282,7 +282,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 
 	private UpdateByQueryRequestBuilder convert(List<String> indices, UpdateByQueryOptions options) {
 		UpdateByQueryRequestBuilder builder = UpdateByQueryAction.INSTANCE.newRequestBuilder(client);
-		if (indices != null && !indices.isEmpty())
+		if (indices != null)
 			builder.source(indices.toArray(new String[] {}));
 		if (options.getScript() != null) {
 			if (options.getScriptType() != null) {
