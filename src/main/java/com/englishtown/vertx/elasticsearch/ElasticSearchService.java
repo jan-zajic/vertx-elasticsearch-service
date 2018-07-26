@@ -139,4 +139,8 @@ public interface ElasticSearchService {
      */
     void suggest(String index, SuggestOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 
+    /**
+     * https://www.elastic.co/guide/en/elasticsearch/reference/2.3/docs-update-by-query.html
+     */
+    void updateByQuery(List<String> indices, UpdateByQueryOptions options, Handler<AsyncResult<JsonObject>> resultHandler);
 }

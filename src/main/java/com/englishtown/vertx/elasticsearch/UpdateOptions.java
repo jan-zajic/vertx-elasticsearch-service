@@ -46,9 +46,9 @@ public class UpdateOptions extends AbstractWriteOptions<UpdateOptions> {
     public static final String FIELD_DETECT_NOOP = "detectNoop";
     public static final String FIELD_SCRIPTED_UPSERT = "scriptedUpsert";
 
-    private static final String SCRIPT_TYPE_INLINE = "inline";
-    private static final String SCRIPT_TYPE_INDEXED = "indexed";
-    private static final String SCRIPT_TYPE_FILE = "file";
+    static final String SCRIPT_TYPE_INLINE = "inline";
+    static final String SCRIPT_TYPE_INDEXED = "indexed";
+    static final String SCRIPT_TYPE_FILE = "file";
 
     public UpdateOptions() {
     }

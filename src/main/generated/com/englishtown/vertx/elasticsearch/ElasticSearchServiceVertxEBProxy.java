@@ -40,6 +40,7 @@ import java.util.List;
 import com.englishtown.vertx.elasticsearch.MultiGetRequest;
 import com.englishtown.vertx.elasticsearch.ElasticSearchService;
 import com.englishtown.vertx.elasticsearch.UpdateOptions;
+import com.englishtown.vertx.elasticsearch.UpdateByQueryOptions;
 import com.englishtown.vertx.elasticsearch.SearchOptions;
 import com.englishtown.vertx.elasticsearch.IndexOptions;
 import com.englishtown.vertx.elasticsearch.SuggestOptions;
@@ -239,6 +240,25 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     _json.put("options", options == null ? null : options.toJson());
     DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
     _deliveryOptions.addHeader("action", "suggest");
+    _vertx.eventBus().<JsonObject>send(_address, _json, _deliveryOptions, res -> {
+      if (res.failed()) {
+        resultHandler.handle(Future.failedFuture(res.cause()));
+      } else {
+        resultHandler.handle(Future.succeededFuture(res.result().body()));
+      }
+    });
+  }
+
+  public void updateByQuery(List<String> indices, UpdateByQueryOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+    if (closed) {
+      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+      return;
+    }
+    JsonObject _json = new JsonObject();
+    _json.put("indices", new JsonArray(indices));
+    _json.put("options", options == null ? null : options.toJson());
+    DeliveryOptions _deliveryOptions = (_options != null) ? new DeliveryOptions(_options) : new DeliveryOptions();
+    _deliveryOptions.addHeader("action", "updateByQuery");
     _vertx.eventBus().<JsonObject>send(_address, _json, _deliveryOptions, res -> {
       if (res.failed()) {
         resultHandler.handle(Future.failedFuture(res.cause()));

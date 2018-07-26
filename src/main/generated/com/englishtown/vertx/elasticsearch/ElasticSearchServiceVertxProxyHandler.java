@@ -47,6 +47,7 @@ import java.util.List;
 import com.englishtown.vertx.elasticsearch.MultiGetRequest;
 import com.englishtown.vertx.elasticsearch.ElasticSearchService;
 import com.englishtown.vertx.elasticsearch.UpdateOptions;
+import com.englishtown.vertx.elasticsearch.UpdateByQueryOptions;
 import com.englishtown.vertx.elasticsearch.SearchOptions;
 import com.englishtown.vertx.elasticsearch.IndexOptions;
 import com.englishtown.vertx.elasticsearch.SuggestOptions;
@@ -175,6 +176,10 @@ public class ElasticSearchServiceVertxProxyHandler extends ProxyHandler {
         }
         case "suggest": {
           service.suggest((java.lang.String)json.getValue("index"), json.getJsonObject("options") == null ? null : new com.englishtown.vertx.elasticsearch.SuggestOptions(json.getJsonObject("options")), createHandler(msg));
+          break;
+        }
+        case "updateByQuery": {
+          service.updateByQuery(convertList(json.getJsonArray("indices").getList()), json.getJsonObject("options") == null ? null : new com.englishtown.vertx.elasticsearch.UpdateByQueryOptions(json.getJsonObject("options")), createHandler(msg));
           break;
         }
         default: {

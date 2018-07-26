@@ -38,6 +38,9 @@ import org.elasticsearch.common.settings.Settings;
 import org.elasticsearch.common.xcontent.ToXContent;
 import org.elasticsearch.common.xcontent.XContentBuilder;
 import org.elasticsearch.common.xcontent.XContentFactory;
+import org.elasticsearch.index.reindex.BulkIndexByScrollResponse;
+import org.elasticsearch.index.reindex.UpdateByQueryAction;
+import org.elasticsearch.index.reindex.UpdateByQueryRequestBuilder;
 import org.elasticsearch.script.Script;
 import org.elasticsearch.script.Template;
 import org.elasticsearch.search.suggest.completion.CompletionSuggestionBuilder;
@@ -55,6 +58,7 @@ import com.englishtown.vertx.elasticsearch.SearchOptions;
 import com.englishtown.vertx.elasticsearch.SearchScrollOptions;
 import com.englishtown.vertx.elasticsearch.SuggestOptions;
 import com.englishtown.vertx.elasticsearch.TransportClientFactory;
+import com.englishtown.vertx.elasticsearch.UpdateByQueryOptions;
 import com.englishtown.vertx.elasticsearch.UpdateOptions;
 import com.englishtown.vertx.elasticsearch.internal.InternalElasticSearchService;
 
@@ -245,6 +249,61 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 	}
 
 	@Override
+	public void updateByQuery(List<String> indices, UpdateByQueryOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
+		UpdateByQueryRequestBuilder builder = convert(indices, options);
+		builder.execute(new ActionListener<BulkIndexByScrollResponse>() {
+			@Override
+			public void onResponse(BulkIndexByScrollResponse updateResponse) {
+				JsonObject result = new JsonObject();
+				JsonArray items = new JsonArray();
+				for (Failure bulkItemResponse : updateResponse.getIndexingFailures()) {
+					JsonObject itemResult = new JsonObject()
+							.put(CONST_INDEX, bulkItemResponse.getIndex())
+								.put(CONST_TYPE, bulkItemResponse.getType())
+								.put(CONST_ID, bulkItemResponse.getId());
+					itemResult.put("failureMessage", bulkItemResponse.getMessage());
+					//TODO: getCause
+					items.add(itemResult);
+				}
+				result.put("failures", items);
+				result.put("tookInMillis", updateResponse.getTook().getMillis());
+				result.put("updated", updateResponse.getUpdated());
+				result.put("batches", updateResponse.getBatches());
+				result.put("versionConflicts", updateResponse.getVersionConflicts());
+				resultHandler.handle(Future.succeededFuture(result));
+			}
+
+			@Override
+			public void onFailure(Throwable e) {
+				onError("cannot update by query", e, resultHandler);
+			}
+		});
+	}
+
+	private UpdateByQueryRequestBuilder convert(List<String> indices, UpdateByQueryOptions options) {
+		UpdateByQueryRequestBuilder builder = UpdateByQueryAction.INSTANCE.newRequestBuilder(client);
+		if (indices != null && !indices.isEmpty())
+			builder.source(indices.toArray(new String[] {}));
+		if (options.getScript() != null) {
+			if (options.getScriptType() != null) {
+				Map<String, ? extends Object> params = (options.getScriptParams() == null ? null : options.getScriptParams().getMap());
+				builder.script(new Script(options.getScript(), options.getScriptType(), options.getScriptLang(), params));
+			} else {
+				builder.script(new Script(options.getScript()));
+			}
+		}
+		
+		applySearchOptions(options, builder.source());
+		if(options.getAbortOnVersionConflict() != null)
+			builder.abortOnVersionConflict(options.getAbortOnVersionConflict());
+		if (options.getRefresh() != null)
+			builder.refresh(options.getRefresh());
+		if (options.getConsistencyLevel() != null)
+			builder.consistency(options.getConsistencyLevel());
+		return builder;
+	}
+
+	@Override
 	public void bulk(BulkOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
 		BulkRequestBuilder builder = client.prepareBulk();
 		if (options != null) {
@@ -281,7 +340,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 								.put(CONST_TYPE, bulkItemResponse.getType())
 								.put(CONST_ID, bulkItemResponse.getId())
 								.put(CONST_VERSION, bulkItemResponse.getVersion());
-					if(bulkItemResponse.getFailure() != null) {
+					if (bulkItemResponse.getFailure() != null) {
 						Failure failure = bulkItemResponse.getFailure();
 						itemResult.put("failure", true);
 						itemResult.put("failureMessage", failure.getMessage());
@@ -378,7 +437,26 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 	public void search(List<String> indices, SearchOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
 
 		SearchRequestBuilder builder = client.prepareSearch(indices.toArray(new String[indices.size()]));
+		applySearchOptions(options, builder);
 
+		if (LOGGER.isDebugEnabled())
+			LOGGER.debug("ElasticSearch Query using Java Client API:\n" + builder.internalBuilder());
+
+		builder.execute(new ActionListener<SearchResponse>() {
+			@Override
+			public void onResponse(SearchResponse searchResponse) {
+				JsonObject json = readResponse(searchResponse);
+				resultHandler.handle(Future.succeededFuture(json));
+			}
+
+			@Override
+			public void onFailure(Throwable t) {
+				onError("cannot execute search query", t, resultHandler);
+			}
+		});
+	}
+
+	private void applySearchOptions(SearchOptions options, SearchRequestBuilder builder) {
 		if (options != null) {
 			if (!options.getTypes().isEmpty()) {
 				builder.setTypes(options.getTypes().toArray(new String[options.getTypes().size()]));
@@ -432,22 +510,6 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 				}
 			}
 		}
-
-		if(LOGGER.isDebugEnabled())
-			LOGGER.debug("ElasticSearch Query using Java Client API:\n" + builder.internalBuilder());
-
-		builder.execute(new ActionListener<SearchResponse>() {
-			@Override
-			public void onResponse(SearchResponse searchResponse) {
-				JsonObject json = readResponse(searchResponse);
-				resultHandler.handle(Future.succeededFuture(json));
-			}
-
-			@Override
-			public void onFailure(Throwable t) {
-				onError("cannot execute search query", t, resultHandler);
-			}
-		});
 	}
 
 	@Override
@@ -610,7 +672,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 				for (MultiGetItemResponse multiGetItem : multiGetResponse.getResponses()) {
 					GetResponse getResponse = multiGetItem.getResponse();
 					JsonObject reply = new JsonObject();
-					if(multiGetItem.getFailure() != null) {
+					if (multiGetItem.getFailure() != null) {
 						MultiGetResponse.Failure failure = multiGetItem.getFailure();
 						reply.put("failure", true);
 						reply.put("failureMessage", failure.getMessage());
@@ -625,7 +687,7 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 					docs.add(reply);
 				}
 				JsonObject reply = new JsonObject()
-							.put("docs", docs);
+						.put("docs", docs);
 				resultHandler.handle(Future.succeededFuture(reply));
 			}
 

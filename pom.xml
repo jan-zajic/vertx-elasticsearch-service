@@ -13,7 +13,7 @@
 
     <properties>
         <vertx.version>3.3.3</vertx.version>
-        <es.version>2.2.0</es.version>
+        <es.version>2.3.4</es.version>
         <lucene.version>5.4.1</lucene.version>
         <vertx.hk2.version>2.4.0</vertx.hk2.version>
         <vertx.guice.version>2.3.0</vertx.guice.version>
@@ -45,6 +45,11 @@
             <artifactId>elasticsearch</artifactId>
             <version>${es.version}</version>
         </dependency>
+        <dependency>
+		    <groupId>org.elasticsearch.module</groupId>
+		    <artifactId>reindex</artifactId>
+		    <version>${es.version}</version>
+		</dependency>
         <dependency>
             <groupId>com.englishtown.vertx</groupId>
             <artifactId>vertx-hk2</artifactId>
