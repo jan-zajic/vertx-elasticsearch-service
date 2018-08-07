@@ -339,7 +339,8 @@ public class DefaultElasticSearchService implements InternalElasticSearchService
 							.put(CONST_INDEX, bulkItemResponse.getIndex())
 								.put(CONST_TYPE, bulkItemResponse.getType())
 								.put(CONST_ID, bulkItemResponse.getId())
-								.put(CONST_VERSION, bulkItemResponse.getVersion());
+								.put(CONST_VERSION, bulkItemResponse.getVersion())
+								.put("responseType", bulkItemResponse.getResponse().getClass().getSimpleName());
 					if (bulkItemResponse.getFailure() != null) {
 						Failure failure = bulkItemResponse.getFailure();
 						itemResult.put("failure", true);
