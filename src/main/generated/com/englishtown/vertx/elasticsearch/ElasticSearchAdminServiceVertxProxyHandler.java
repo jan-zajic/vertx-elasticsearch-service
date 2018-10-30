@@ -90,12 +90,6 @@ public class ElasticSearchAdminServiceVertxProxyHandler extends ProxyHandler {
     accessed();
   }
 
-  public MessageConsumer<JsonObject> registerHandler(String address) {
-    MessageConsumer<JsonObject> consumer = vertx.eventBus().<JsonObject>consumer(address).handler(this);
-    this.setConsumer(consumer);
-    return consumer;
-  }
-
   private void checkTimedOut(long id) {
     long now = System.nanoTime();
     if (now - lastAccessed > timeoutSeconds * 1000000000) {

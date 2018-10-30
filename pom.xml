@@ -12,8 +12,8 @@
     </parent>
 
     <properties>
-        <vertx.version>3.3.3</vertx.version>
-        <es.version>2.3.4</es.version>
+        <vertx.version>3.5.4</vertx.version>
+        <es.version>2.4.6</es.version>
         <lucene.version>5.4.1</lucene.version>
         <vertx.hk2.version>2.4.0</vertx.hk2.version>
         <vertx.guice.version>2.3.0</vertx.guice.version>

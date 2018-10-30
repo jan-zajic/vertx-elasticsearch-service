@@ -75,15 +75,18 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     } catch (IllegalStateException ex) {}
   }
 
+  @Override
   public void start() {
   }
 
+  @Override
   public void stop() {
   }
 
+  @Override
   public void index(IndexOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -99,9 +102,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void update(UpdateOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -117,9 +121,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void bulk(BulkOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -135,9 +140,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void get(String index, String type, String id, GetOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -156,9 +162,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void mget(MultiGetRequest docs, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -174,9 +181,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void search(List<String> indices, SearchOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -193,9 +201,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void searchScroll(String scrollId, SearchScrollOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -212,9 +221,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void delete(DeleteOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -230,9 +240,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void suggest(String index, SuggestOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -249,9 +260,10 @@ public class ElasticSearchServiceVertxEBProxy implements ElasticSearchService {
     });
   }
 
+  @Override
   public void updateByQuery(List<String> indices, UpdateByQueryOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();

@@ -66,9 +66,10 @@ public class ElasticSearchAdminServiceVertxEBProxy implements ElasticSearchAdmin
     } catch (IllegalStateException ex) {}
   }
 
+  @Override
   public void putMapping(List<String> indices, String type, JsonObject source, MappingOptions options, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -87,9 +88,10 @@ public class ElasticSearchAdminServiceVertxEBProxy implements ElasticSearchAdmin
     });
   }
 
+  @Override
   public void createIndex(String index, JsonObject settings, JsonObject mappings, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
@@ -107,9 +109,10 @@ public class ElasticSearchAdminServiceVertxEBProxy implements ElasticSearchAdmin
     });
   }
 
+  @Override
   public void deleteIndex(String index, Handler<AsyncResult<JsonObject>> resultHandler) {
     if (closed) {
-      resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
+    resultHandler.handle(Future.failedFuture(new IllegalStateException("Proxy is closed")));
       return;
     }
     JsonObject _json = new JsonObject();
